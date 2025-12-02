@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        <!-- Security Token (Zaroori hai) -->
+        {{ form.hidden_tag() }}
+        
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Add New Expense</legend>
+            
+            <!-- TITLE FIELD (Jaise: Pizza, Petrol) -->
+            <div class="form-group mb-3">
+                {{ form.title.label(class="form-control-label") }}
+                
+                <!-- Agar Error hai to Red Box dikhao -->
+                {% if form.title.errors %}
+                    {{ form.title(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.title.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.title(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            
+            <!-- AMOUNT FIELD (Jaise: 500) -->
+            <div class="form-group mb-3">
+                {{ form.amount.label(class="form-control-label") }}
+                
+                {% if form.amount.errors %}
+                    {{ form.amount(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.amount.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.amount(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <!-- CATEGORY FIELD (Dropdown) -->
+            <div class="form-group mb-3">
+                {{ form.category.label(class="form-control-label") }}
+                
+                {% if form.category.errors %}
+                    {{ form.category(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.category.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <!-- 'form-select' class dropdown ko sundar banati hai -->
+                    {{ form.category(class="form-select form-control-lg") }} 
+                {% endif %}
+            </div>
+
+        </fieldset>
+        
+        <!-- BUTTONS -->
+        <div class="form-group mt-3">
+            {{ form.submit(class="btn btn-outline-info") }}
+            <!-- Cancel button wapas home bhejne ke liye -->
+            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
