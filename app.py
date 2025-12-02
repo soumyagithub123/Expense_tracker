@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
 from forms import RegistrationForm, LoginForm, ExpenseForm 
 from datetime import datetime
+import os # Ye zaroori hai path errors se bachne ke liye
 
 app = Flask(__name__)
 
@@ -43,6 +44,11 @@ class Expense(db.Model):
     def __repr__(self):
         return f"Expense('{self.title}', '{self.date_posted}')"
 
+# --- [CRITICAL FIX] DATABASE CREATION ---
+# Ye line ensure karegi ki Render par tables ban jayein
+with app.app_context():
+    db.create_all()
+
 # --- ROUTES ---
 
 @app.route("/")
@@ -52,9 +58,8 @@ def home():
         expenses = Expense.query.filter_by(author=current_user).order_by(Expense.date_posted.desc()).all()
         total = sum(expense.amount for expense in expenses)
 
-        # --- GRAPH KA DATA PREPARE KARNA (Ye Zaroori Hai) ---
+        # Graph Data Logic
         data = {'Food': 0, 'Travel': 0, 'Shopping': 0, 'Bills': 0, 'Others': 0}
-        
         for expense in expenses:
             if expense.category in data:
                 data[expense.category] += expense.amount
@@ -128,6 +133,4 @@ def logout():
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
